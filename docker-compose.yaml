@@ -1,6 +1,6 @@
 version: "3.9"
 services:
-  augeias-post:
+  augeias-anomalies:
     build: .
     restart: always
     container_name: augeias-anomalies
