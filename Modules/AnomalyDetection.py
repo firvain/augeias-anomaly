@@ -1,62 +1,88 @@
+import numpy as np
+import pandas as pd
 import seaborn as sns
-from matplotlib import pyplot as plt
-from pyod.models.copod import COPOD
+from joblib import dump, load
+from pyod.models.auto_encoder import AutoEncoder
 from pyod.models.iforest import IForest
-from pyod.models.lof import LOF
-from pyod.models.suod import SUOD
-from sklearn.model_selection import train_test_split
+from pyod.models.knn import KNN
 
 from Modules.Database import get_data_from_augeias_postgresql
 
-sns.set(rc={'figure.figsize': (11.7, 8.27)})
+sns.set(rc={'figure.figsize': (11.69, 8.27)})
+
+outliers_fraction = 0.05
+random_state = np.random.RandomState(42)
+classifiers = {
+    'Isolation Forest': IForest(contamination=outliers_fraction, random_state=random_state),
+    'K Nearest Neighbors (KNN)': KNN(contamination=outliers_fraction),
+    # 'Empirical Cumulative Distribution Functions': ECOD(contamination=outliers_fraction),
+    'Auto Encoder with Outlier Detection': AutoEncoder(contamination=0.1, random_state=random_state,
+                                                       hidden_neurons=[4, 2, 2, 4], verbose=0)
+}
+
+
+def train_models(table_name: str):
+    sql = f"""select * from "{table_name}" order by timestamp"""
+    data = get_data_from_augeias_postgresql(table_name, sql)
+    data.dropna(inplace=True)
+    test = data.iloc[:-24]
+
+    # train, test = train_test_split(data, test_size=0.2)
+
+    for i, (clf_name, clf) in enumerate(classifiers.items()):
+        # print(i, clf)
+        clf.fit(test)
+        dump(clf, 'models/' + table_name + '_' + clf_name + '.joblib')
 
 
 def find_anomalies(table_name: str):
-    data = get_data_from_augeias_postgresql(table_name)
+    sql = f"""select * from "{table_name}" order by timestamp DESC LIMIT 24"""
+    data = get_data_from_augeias_postgresql(table_name, sql)
 
-    train, test = train_test_split(data, test_size=0.2)
-    print(data.shape)
-    print(train.shape)
-    print(test.shape)
-    # train ECOD detector
-    clf_name = 'KNN'
-    detector_list = [LOF(n_neighbors=15), LOF(n_neighbors=20),
-                     LOF(n_neighbors=25), LOF(n_neighbors=35),
-                     COPOD(), IForest(n_estimators=100),
-                     IForest(n_estimators=200)]
+    # train, test = train_test_split(data, test_size=0.2)
+    data.dropna(inplace=True)
+    data.sort_index(inplace=True)
+    print(data)
 
-    # decide the number of parallel process, and the combination method
-    # then clf can be used as any outlier detection model
-    clf = SUOD(base_estimators=detector_list, n_jobs=2, combination='average',
-               verbose=False)
-    # clf = KNN()
+    props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
+    num_mes = data.shape[0]
+    df = pd.DataFrame()
+    for i, (clf_name, clf) in enumerate(classifiers.items()):
+        # print(i)
 
-    # you could try parallel version as well.
-    # clf = ECOD(n_jobs=2)
-    clf.fit(data)
+        clf = load('models/' + table_name + '_' + clf_name + '.joblib')
 
-    # get the prediction labels and outlier scores of the training data
-    y_train_pred = clf.labels_  # binary labels (0: inliers, 1: outliers)
-    y_train_scores = clf.decision_scores_  # raw outlier scores
+        # get the prediction on the test data
+        y_test_pred = clf.predict(data.values)  # outlier labels (0 or 1)
+        y_test_scores = clf.decision_function(data.values)  # outlier scores
 
-    # get the prediction on the test data
-    y_test_pred = clf.predict(data)  # outlier labels (0 or 1)
-    y_test_scores = clf.decision_function(data)  # outlier scores
+        outliers = data.iloc[y_test_pred == 1]
 
-    outliers = data.iloc[y_test_pred == 1]
-    print(outliers)
-    dfm = outliers.reset_index().melt('timestamp', var_name="measurements", value_name="val")
-    print(dfm)
-    g = sns.catplot(x="timestamp", y="val", hue='measurements', data=dfm)
+        out = outliers.sort_index()
 
-    plt.grid()
-    plt.show()
-    # # evaluate and print the results
-    # print("\nOn Training Data:")
-    # evaluate_print(clf_name, train, y_train_scores)
-    # # print("\nOn Test Data:")
-    # evaluate_print(clf_name, test, y_test_scores)
-    # #
-    # # visualize the results
-    # visualize(clf_name, train, test, y_train_pred,
-    #           y_test_pred, show_figure=True, save_figure=False)
+        df = pd.concat([df, out], axis=0)
+
+        num_outliers = outliers.shape[0]
+        # dfm = outliers.reset_index().melt('timestamp', var_name="measurements", value_name="val")
+        #
+        # g = sns.catplot(x="timestamp", y="val", hue='measurements', data=dfm, legend_out=True)
+        # ax = g.axes
+        # textstr = '\n'.join((
+        #     f'Num measurements : {num_mes}',
+        #     f'Num anomalies: {num_outliers}'))
+        # ax = plt.gca()
+        # # get current xtick labels
+        # xticks = ax.get_xticks()
+        # ax.xaxis.set_major_locator(mticker.FixedLocator(xticks))
+        # # convert all xtick labels to selected format from ms timestamp
+        # ax.set_xticklabels([dfm.iloc[tm]['timestamp'].strftime('%d-%m-%y\n %H:%M') for tm in xticks],
+        #                    rotation=90, fontsize=6)
+        # plt.text(.78, .9, textstr, fontsize=8, transform=plt.gcf().transFigure)
+        # ax.grid(True, axis='both')
+        # g.fig.suptitle(clf_name)
+        # plt.show()
+
+    print(df.columns)
+    print(df.shape)
+    df = df.groupby(df.index).first()
+    return df
