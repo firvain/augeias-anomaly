@@ -2,7 +2,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 from joblib import dump, load
-from pyod.models.auto_encoder import AutoEncoder
+# from pyod.models.auto_encoder import AutoEncoder
 from pyod.models.iforest import IForest
 from pyod.models.knn import KNN
 
@@ -10,14 +10,14 @@ from Modules.Database import get_data_from_augeias_postgresql
 
 sns.set(rc={'figure.figsize': (11.69, 8.27)})
 
-outliers_fraction = 0.05
+outliers_fraction = 0.01
 random_state = np.random.RandomState(42)
 classifiers = {
     'Isolation Forest': IForest(contamination=outliers_fraction, random_state=random_state),
     'K Nearest Neighbors (KNN)': KNN(contamination=outliers_fraction),
     # 'Empirical Cumulative Distribution Functions': ECOD(contamination=outliers_fraction),
-    'Auto Encoder with Outlier Detection': AutoEncoder(contamination=0.1, random_state=random_state,
-                                                       hidden_neurons=[4, 2, 2, 4], verbose=0)
+    # 'Auto Encoder with Outlier Detection': AutoEncoder(contamination=0.1, random_state=random_state,
+    #                                                    hidden_neurons=[4, 2, 2, 4], verbose=0)
 }
 
 
@@ -35,14 +35,14 @@ def train_models(table_name: str):
         dump(clf, 'models/' + table_name + '_' + clf_name + '.joblib')
 
 
-def find_anomalies(table_name: str):
-    sql = f"""select * from "{table_name}" order by timestamp DESC LIMIT 24"""
+def find_anomalies(table_name: str, hours: int = 24):
+    sql = f"""select * from "{table_name}" order by timestamp DESC LIMIT {hours}"""
     data = get_data_from_augeias_postgresql(table_name, sql)
 
     # train, test = train_test_split(data, test_size=0.2)
     data.dropna(inplace=True)
     data.sort_index(inplace=True)
-    print(data)
+    # print(data)
 
     props = dict(boxstyle='round', facecolor='wheat', alpha=0.5)
     num_mes = data.shape[0]
@@ -63,6 +63,8 @@ def find_anomalies(table_name: str):
         df = pd.concat([df, out], axis=0)
 
         num_outliers = outliers.shape[0]
+        print(f'method: {clf_name}')
+        print(f'outliers found: {num_outliers}')
         # dfm = outliers.reset_index().melt('timestamp', var_name="measurements", value_name="val")
         #
         # g = sns.catplot(x="timestamp", y="val", hue='measurements', data=dfm, legend_out=True)
@@ -82,7 +84,7 @@ def find_anomalies(table_name: str):
         # g.fig.suptitle(clf_name)
         # plt.show()
 
-    print(df.columns)
-    print(df.shape)
+    # print(df.columns)
+    # print(df.shape)
     df = df.groupby(df.index).first()
     return df
