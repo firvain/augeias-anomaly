@@ -95,5 +95,18 @@ def save_df_to_database(df: pd.DataFrame, table_name: str):
         except ValueError as e:
             print(e)
     else:
-        print(f"{Fore.READ}Table name is empty!!!")
+        print(f"{Fore.RED}Table name is empty!!!")
+        pass
+
+
+def save_new_data_to_db(df: pd.DataFrame, table_name: str):
+    if table_name:
+        print(f"saving {table_name} to db")
+        engine = create_engine(POSTGRESQL_URL)
+        try:
+            return df.to_sql(table_name, engine, index=False, if_exists="append")
+        except ValueError as e:
+            print(e)
+    else:
+        print(f"{Fore.RED}Table name is empty!!!")
         pass

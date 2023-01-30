@@ -1,3 +1,5 @@
+import os
+
 import numpy as np
 import pandas as pd
 import seaborn as sns
@@ -21,10 +23,19 @@ classifiers = {
 }
 
 
+def get_sensor_data(sensor: str):
+    sql = f"""select * from "{sensor}" order by timestamp"""
+    data = get_data_from_augeias_postgresql(sensor, sql)
+    data.dropna(inplace=True)
+    data.sort_index(inplace=True)
+    return data
+
+
 def train_models(table_name: str):
     sql = f"""select * from "{table_name}" order by timestamp"""
     data = get_data_from_augeias_postgresql(table_name, sql)
     data.dropna(inplace=True)
+
     test = data.iloc[:-24]
 
     # train, test = train_test_split(data, test_size=0.2)
@@ -33,6 +44,43 @@ def train_models(table_name: str):
         # print(i, clf)
         clf.fit(test)
         dump(clf, 'models/' + table_name + '_' + clf_name + '.joblib')
+
+
+def clear_models_directory():
+    for file in os.scandir('Models/'):
+        os.remove(file.path)
+
+
+def clear_anomalies_directory():
+    for file in os.scandir('Anomalies/'):
+        os.remove(file.path)
+
+
+def train_univariate(sensor, column, series, clear=True):
+    if clear:
+        clear_models_directory()
+    for i, (clf_name, clf) in enumerate(classifiers.items()):
+        clf.fit(series)
+        dump(clf, 'models/' + sensor + '_' + column + '_' + clf_name + '.joblib')
+        yield clf, clf_name
+
+
+def find_anomalies_univariate(clf, clf_name, sensor, column, test):
+    y_test_pred = clf.predict(test.values.reshape(-1, 1))  # outlier labels (0 or 1)
+
+    y_test_scores = clf.decision_function(test.values.reshape(-1, 1))  # outlier scores
+
+    outliers = test.iloc[y_test_pred == 1]
+
+    outliers = outliers.sort_index()
+    outliers.rename('value', inplace=True)
+
+    if outliers.shape[0] > 0:
+        df = pd.DataFrame(outliers)
+        df['sensor'] = sensor
+        df['variable'] = column
+
+        return df
 
 
 def find_anomalies(table_name: str, hours: int = 24):
