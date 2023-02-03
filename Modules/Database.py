@@ -82,7 +82,7 @@ def get_data_from_augeias_postgresql(table_name: str, sql: str):
         except ValueError as e:
             print(e)
     else:
-        print(f"{Fore.READ}Table name is empty!!!")
+        print(f"{Fore.RED}Table name is empty!!!")
         pass
 
 
