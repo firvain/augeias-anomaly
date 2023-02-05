@@ -87,10 +87,9 @@ def train_univariate(sensor, column, series):
 
 def find_anomalies_univariate(sensor, column, test):
     clf = load('./Models/' + sensor + '_' + column + '_' + 'SUOD' + '.joblib')
-    print('./Models/' + sensor + '_' + column + '_' + 'SUOD' + '.joblib')
 
     y_test_pred = clf.predict(test.values.reshape(-1, 1))  # outlier labels (0 or 1)
-  
+
     y_test_scores = clf.decision_function(test.values.reshape(-1, 1))  # outlier scores
 
     outliers = test.iloc[y_test_pred == 1]

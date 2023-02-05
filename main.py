@@ -1,10 +1,8 @@
 # Press the green button in the gutter to run the script.
 import json
-from pathlib import Path
 
 import pandas as pd
 from colorama import Fore, init
-from matplotlib import pyplot as plt
 
 from Modules.AnomalyDetection import classifiers, clear_anomalies_directory, clear_models_directory, \
     find_anomalies_univariate, \
@@ -15,7 +13,7 @@ init(autoreset=True)
 sensors = ['Teros_12', 'Triscan', 'Scan_chlori', 'Aquatroll', 'Proteus_infinite', 'ATMOS', 'addvantage', ]
 
 
-def find_ano2(clear=True, should_train=True):
+def find_ano2(clear=False, should_train=True):
     if clear:
         clear_anomalies_directory()
         clear_models_directory()
@@ -83,14 +81,14 @@ def find_ano2(clear=True, should_train=True):
             sensor_dataframe = sensor_dataframe.sort_index()
             sensor_dataframe.to_csv(f'Anomalies/{sensor}.csv')
 
-            sensor_dataframe.plot(subplots=True, figsize=(20, 20), title=sensor,
-                                  sharex=True, ls="none", marker="o",
-                                  y=[_ for _ in sensor_dataframe.columns], grid=True)
-            plt.tight_layout()
-
-            Path(f'Anomalies/PNG/').mkdir(parents=True, exist_ok=True)
-            plt.savefig(f'Anomalies/PNG/{sensor}.png')
-            plt.show()
+            # sensor_dataframe.plot(subplots=True, figsize=(20, 20), title=sensor,
+            #                       sharex=True, ls="none", marker="o",
+            #                       y=[_ for _ in sensor_dataframe.columns], grid=True)
+            # plt.tight_layout()
+            #
+            # Path(f'Anomalies/PNG/').mkdir(parents=True, exist_ok=True)
+            # plt.savefig(f'Anomalies/PNG/{sensor}.png')
+            # plt.show()
             try:
                 save_df_to_database(df=sensor_dataframe, table_name=sensor + "_Anomalies")
             except Exception as e:
@@ -99,5 +97,5 @@ def find_ano2(clear=True, should_train=True):
 
 
 if __name__ == '__main__':
-    find_ano2(should_train=True, clear=True)
+    find_ano2(should_train=False, clear=False)
     # my_schedule(find_ano2)
