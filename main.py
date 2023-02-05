@@ -47,7 +47,7 @@ def find_ano2(clear=True, should_train=True):
 
                 test = test[column]
                 test = test.dropna()
-
+                print(test)
                 if test.shape[0] > 0:
                     outliers = find_anomalies_univariate(sensor, column, test)
 
