@@ -10,80 +10,10 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/Anomalies/ATMOS_air-temperature.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/ATMOS_atmospheric-pressure.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/ATMOS_gust-windspeed.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/ATMOS_precipitation.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/ATMOS_solar-radiation.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/ATMOS_wind-direction.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/ATMOS_windspeed.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/Anomalies/Aquatroll.csv">
           <value>
             <Attribute>
               <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Aquatroll_RDO.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Proteus_infinite.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Proteus_infinite_total_coli.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
@@ -94,24 +24,10 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/Anomalies/Scan_chlori_temperatureSensor.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/Anomalies/Teros_12.csv">
           <value>
             <Attribute>
               <option name="separator" value=":" />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Teros_12_soil-temperature.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
             </Attribute>
           </value>
         </entry>
@@ -122,105 +38,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="/Anomalies/Triscan_soil-salinity15.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Triscan_soil-salinity25.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Triscan_soil-salinity5.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Triscan_soil-temperature15.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Triscan_soil-temperature25.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/Triscan_soil-temperature5.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="/Anomalies/addvantage.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_Air temperature.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_Leaf Wetness.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_Pyranometer.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_RH.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_Soil conductivity_5cm.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_Soil moisture_25cm.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_Soil temperature_5cm.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="/Anomalies/addvantage_Wind speed 100 Hz.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
