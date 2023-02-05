@@ -14,15 +14,6 @@ init(autoreset=True)
 sensors = ['Teros_12', 'Triscan', 'Scan_chlori', 'Aquatroll', 'Proteus_infinite', 'ATMOS', 'addvantage', ]
 
 
-# def find_ano():
-#     for sensor in sensors:
-#         train_models(sensor)
-#         df = find_anomalies(sensor)
-#         print(df.shape)
-#         #
-#         save_df_to_database(df=df, table_name=sensor + "_Anomalies")
-
-
 def find_ano2(clear=True, should_train=True):
     if clear:
         clear_anomalies_directory()
