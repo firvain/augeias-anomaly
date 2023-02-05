@@ -9,6 +9,7 @@ from matplotlib import pyplot as plt
 from Modules.AnomalyDetection import classifiers, clear_anomalies_directory, clear_models_directory, \
     find_anomalies_univariate, \
     get_last_24h_data, get_sensor_data, train_univariate
+from Modules.Database import save_df_to_database
 
 init(autoreset=True)
 sensors = ['Teros_12', 'Triscan', 'Scan_chlori', 'Aquatroll', 'Proteus_infinite', 'ATMOS', 'addvantage', ]
@@ -36,6 +37,7 @@ def find_ano2(clear=True, should_train=True):
 
             out = pd.DataFrame()
             if should_train:
+                print(f'{Fore.YELLOW}Training models for {sensor} {column}...')
                 a = train_univariate(sensor, column, train.values.reshape(-1, 1))
             else:
                 a = classifiers.items()
@@ -47,7 +49,7 @@ def find_ano2(clear=True, should_train=True):
 
                 test = test[column]
                 test = test.dropna()
-                print(test)
+
                 if test.shape[0] > 0:
                     outliers = find_anomalies_univariate(sensor, column, test)
 
@@ -90,13 +92,12 @@ def find_ano2(clear=True, should_train=True):
             plt.savefig(f'Anomalies/PNG/{sensor}.png')
             plt.show()
             try:
-                pass
-                # save_df_to_database(df=sensor_dataframe, table_name=sensor + "_Anomalies")
+                save_df_to_database(df=sensor_dataframe, table_name=sensor + "_Anomalies")
             except Exception as e:
                 print(e)
                 pass
 
 
 if __name__ == '__main__':
-    find_ano2(should_train=False, clear=False)
+    find_ano2(should_train=True, clear=True)
     # my_schedule(find_ano2)
