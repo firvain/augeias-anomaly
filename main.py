@@ -9,8 +9,6 @@ from matplotlib import pyplot as plt
 from Modules.AnomalyDetection import classifiers, clear_anomalies_directory, clear_models_directory, \
     find_anomalies_univariate, \
     get_last_24h_data, get_sensor_data, train_univariate
-from Modules.Database import save_df_to_database
-from Modules.scheduler import my_schedule
 
 init(autoreset=True)
 sensors = ['Teros_12', 'Triscan', 'Scan_chlori', 'Aquatroll', 'Proteus_infinite', 'ATMOS', 'addvantage', ]
@@ -101,12 +99,13 @@ def find_ano2(clear=True, should_train=True):
             plt.savefig(f'Anomalies/PNG/{sensor}.png')
             plt.show()
             try:
-                save_df_to_database(df=sensor_dataframe, table_name=sensor + "_Anomalies")
+                pass
+                # save_df_to_database(df=sensor_dataframe, table_name=sensor + "_Anomalies")
             except Exception as e:
                 print(e)
                 pass
 
 
 if __name__ == '__main__':
-    # find_ano2(should_train=False, clear=False)
-    my_schedule(find_ano2)
+    find_ano2(should_train=False, clear=False)
+    # my_schedule(find_ano2)

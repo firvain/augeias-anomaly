@@ -81,12 +81,12 @@ def clear_anomalies_directory():
 def train_univariate(sensor, column, series):
     for i, (clf_name, clf) in enumerate(classifiers.items()):
         clf.fit(series)
-        dump(clf, 'Models/' + sensor + '_' + column + '_' + clf_name + '.joblib')
+        dump(clf, './Models/' + sensor + '_' + column + '_' + clf_name + '.joblib')
         yield clf, clf_name
 
 
 def find_anomalies_univariate(sensor, column, test):
-    clf = load('Models/' + sensor + '_' + column + '_' + 'SUOD' + '.joblib')
+    clf = load('./Models/' + sensor + '_' + column + '_' + 'SUOD' + '.joblib')
     y_test_pred = clf.predict(test.values.reshape(-1, 1))  # outlier labels (0 or 1)
 
     y_test_scores = clf.decision_function(test.values.reshape(-1, 1))  # outlier scores
